@@ -29,7 +29,7 @@
 <div id="loginPage" class="flex items-center justify-center min-h-[90vh]">
     <div class="realistic-card p-10 w-full max-w-md text-center">
         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5Cq625vlFoXxMad-Jdx5jBbUyQOAyw65xyt0dX9N4WqbVY1EFdypDDfxFtoxlIYVuR-xg9YObJ2drHHaPQNcjCMTuL2VicG50xZk5mtyEQNXewdv2EfvgaT75Grq03ZmJ-N6usyp9yg1GWi-s7mLIAADO4XSCKee7shYBjYpsrvUTTN9dF5vlp6NMOQBM/s1600/7934.png" class="h-20 mx-auto mb-8">
-        <h2 class="text-3xl font-bold mb-10 italic text-white">হিসাব</h2>
+        <h2 class="text-3xl font-bold mb-10 italic text-white">অ্যাকাউন্ট</h2>
         <input type="password" id="password" class="w-full input-premium mb-4 text-center" placeholder="পাসওয়ার্ড">
         <button onclick="login()" class="w-full btn-glow py-4 uppercase tracking-widest">ভিতরে যান</button>
     </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="realistic-card p-6 px-8 flex justify-between items-center text-sm">
                     <span>খোলা দিন: <b id="mOpen" class="text-white ml-2">০</b></span>
-       
+                    <span>বন্ধ দিন: <b id="mClosed" class="text-white ml-2">০</b></span>
                 </div>
                 <div class="realistic-card p-6 px-8 flex justify-between items-center">
                     <span class="text-slate-400 font-bold uppercase text-xs">নিট মুনাফা:</span>
@@ -95,8 +95,8 @@
                 <input type="number" id="incomeInp" placeholder="আয় (৳)" class="input-premium">
                 <input type="number" id="expenseInp" placeholder="ব্যয় (৳)" class="input-premium">
                 <select id="statusInp" class="input-premium">
-                    <option value="Open">শপ খোলা</option>
-                    <option value="Closed">শপ কেন বন্ধ রাখতে ? উপরের টায় ক্লিক কর</option>
+                    <option value="Open">দোকান খোলা</option>
+                    <option value="Closed">দোকান বন্ধ</option>
                 </select>
                 <button onclick="addItem()" class="btn-glow py-4 flex justify-center items-center gap-2">
                     <span id="btnText">সেভ করুন</span>
@@ -289,4 +289,4 @@
     }
 </script>
 </body>
-                                     </html>
+                        </html>
