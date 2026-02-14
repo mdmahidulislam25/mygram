@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Gram | Cloud Enterprise</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
+        :root { --primary: #f39c12; --bg: #030712; --card: rgba(17, 24, 39, 0.8); }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg); color: #f8fafc; }
+        .realistic-card { background: var(--card); backdrop-filter: blur(25px); border: 1px solid rgba(243, 156, 18, 0.1); border-radius: 35px; box-shadow: 20px 20px 60px #010409; }
+        .input-premium { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 18px; padding: 14px; color: white; transition: 0.3s; }
+        .input-premium:focus { border-color: var(--primary); outline: none; }
+        .btn-glow { background: linear-gradient(135deg, #f39c12, #d35400); border-radius: 20px; transition: 0.4s; color: white; font-weight: bold; }
+        .btn-glow:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4); }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+<div id="loginPage" class="flex items-center justify-center min-h-[90vh]">
+    <div class="realistic-card p-10 w-full max-w-md text-center">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5Cq625vlFoXxMad-Jdx5jBbUyQOAyw65xyt0dX9N4WqbVY1EFdypDDfxFtoxlIYVuR-xg9YObJ2drHHaPQNcjCMTuL2VicG50xZk5mtyEQNXewdv2EfvgaT75Grq03ZmJ-N6usyp9yg1GWi-s7mLIAADO4XSCKee7shYBjYpsrvUTTN9dF5vlp6NMOQBM/s1600/7934.png" class="h-20 mx-auto mb-8">
+        <h2 class="text-3xl font-bold mb-10 italic text-white">হিসাব</h2>
+        <input type="password" id="password" class="w-full input-premium mb-4 text-center" placeholder="পাসওয়ার্ড">
+        <button onclick="login()" class="w-full btn-glow py-4 uppercase tracking-widest">ভিতরে যান</button>
+    </div>
+</div>
+
+<div id="dashboard" class="hidden">
+    <header class="flex justify-between items-center mb-10 max-w-7xl mx-auto">
+        <div class="flex items-center gap-4">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5Cq625vlFoXxMad-Jdx5jBbUyQOAyw65xyt0dX9N4WqbVY1EFdypDDfxFtoxlIYVuR-xg9YObJ2drHHaPQNcjCMTuL2VicG50xZk5mtyEQNXewdv2EfvgaT75Grq03ZmJ-N6usyp9yg1GWi-s7mLIAADO4XSCKee7shYBjYpsrvUTTN9dF5vlp6NMOQBM/s1600/7934.png" class="h-12">
+            <div>
+                <h1 class="text-2xl font-bold italic text-orange-500">MY GRAM <span class="text-white font-black"></span></h1>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Your Online Shop</p>
+            </div>
+        </div>
+        <button onclick="location.reload()" class="h-12 w-12 realistic-card flex items-center justify-center text-rose-500"><i class="fas fa-power-off"></i></button>
+    </header>
+
+    <main class="max-w-7xl mx-auto space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="realistic-card p-8 border-l-4 border-emerald-500">
+                    <p class="text-slate-500 text-xs font-bold uppercase mb-2">মোট প্রাপ্তি</p>
+                    <h3 id="mIncome" class="text-4xl font-black text-emerald-400">৳ ০</h3>
+                    <div class="mt-4 h-1 w-full bg-slate-800 rounded-full"><div id="incomeBar" class="h-full bg-emerald-500 transition-all duration-1000" style="width: 0%"></div></div>
+                </div>
+                <div class="realistic-card p-8 border-l-4 border-rose-500">
+                    <p class="text-slate-500 text-xs font-bold uppercase mb-2">মোট ব্যয়</p>
+                    <h3 id="mExpense" class="text-4xl font-black text-rose-400">৳ ০</h3>
+                    <div class="mt-4 h-1 w-full bg-slate-800 rounded-full"><div id="expenseBar" class="h-full bg-rose-500 transition-all duration-1000" style="width: 0%"></div></div>
+                </div>
+                <div class="realistic-card p-6 px-8 flex justify-between items-center text-sm">
+                    <span>খোলা দিন: <b id="mOpen" class="text-white ml-2">০</b></span>
+       
+                </div>
+                <div class="realistic-card p-6 px-8 flex justify-between items-center">
+                    <span class="text-slate-400 font-bold uppercase text-xs">নিট মুনাফা:</span>
+                    <span id="mProfit" class="text-2xl font-black text-orange-400">৳ ০</span>
+                </div>
+            </div>
+            <div class="realistic-card p-8 flex flex-col items-center justify-center min-h-[300px]">
+                <h4 class="text-xs font-bold text-slate-500 uppercase mb-6">লাভ-ক্ষতি গ্রাফ</h4>
+                <div class="w-full relative h-48"><canvas id="mainChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="realistic-card p-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-file-pdf text-3xl text-rose-500"></i>
+                    <div><h4 class="font-bold">রিপোর্ট ডাউনলোড</h4><p class="text-[10px] text-slate-500">তারিখ অনুযায়ী PDF রিপোর্ট জেনারেট করুন</p></div>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <input type="date" id="pdfStart" class="input-premium py-2 text-sm">
+                    <input type="date" id="pdfEnd" class="input-premium py-2 text-sm">
+                    <button onclick="exportToPDF()" class="bg-rose-600 px-6 py-2 rounded-xl font-bold text-sm">PDF ডাউনলোড</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminPanel" class="hidden realistic-card p-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <input type="date" id="dateInp" class="input-premium">
+                <input type="number" id="incomeInp" placeholder="আয় (৳)" class="input-premium">
+                <input type="number" id="expenseInp" placeholder="ব্যয় (৳)" class="input-premium">
+                <select id="statusInp" class="input-premium">
+                    <option value="Open">শপ খোলা</option>
+                    <option value="Closed">শপ কেন বন্ধ রাখতে ? উপরের টায় ক্লিক কর</option>
+                </select>
+                <button onclick="addItem()" class="btn-glow py-4 flex justify-center items-center gap-2">
+                    <span id="btnText">সেভ করুন</span>
+                    <div id="saveLoader" class="loader"></div>
+                </button>
+            </div>
+        </div>
+
+        <div class="realistic-card overflow-hidden">
+            <div class="p-8 border-b border-white/5 font-bold text-slate-400 uppercase text-xs">ট্রানজিশন লেজার (Google Sheets)</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="text-[10px] font-bold text-slate-500 bg-white/5 uppercase">
+                        <tr>
+                            <th class="p-6">তারিখ</th>
+                            <th class="p-6">আয়</th>
+                            <th class="p-6">ব্যয়</th>
+                            <th class="p-6">অবস্থা</th>
+                            <th id="actHead" class="p-6 hidden text-center">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // আপনার গুগল অ্যাপস স্ক্রিপ্টের URL নিচে বসান
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWDKTIzQD2-qxPFFFEgzsumc7SV2GP7DG9NdzhLkR9se2ZnTCxBPfttfW1tANOXF1iPA/exec"; 
+    
+    let db = [];
+    let myChart = null;
+    let isAdmin = false;
+
+    // তারিখ ফরম্যাট সমাধান (যেমন: ২৬-২-২৪)
+    function formatDate(dateStr) {
+        if (!dateStr) return "-";
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        
+        const day = d.getDate();
+        const month = d.getMonth() + 1;
+        const year = d.getFullYear().toString().slice(-2);
+        return `${day}-${month}-${year}`;
+    }
+
+    async function login() {
+        const p = document.getElementById('password').value;
+        if(p === 'adminM.Rfree5107c' || p === 'M.Rfree5107c') {
+            isAdmin = (p === 'adminM.Rfree5107c');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            if(isAdmin) { 
+                document.getElementById('adminPanel').classList.remove('hidden'); 
+                document.getElementById('actHead').classList.remove('hidden'); 
+            }
+            fetchData();
+        } else { alert("ভুল পাসওয়ার্ড!"); }
+    }
+
+    async function fetchData() {
+        try {
+            const res = await fetch(SCRIPT_URL);
+            db = await res.json();
+            db.sort((a,b) => new Date(b.date) - new Date(a.date));
+            render();
+        } catch(e) { console.error("Data Load Error"); }
+    }
+
+    async function addItem() {
+        const d = document.getElementById('dateInp').value;
+        const i = parseFloat(document.getElementById('incomeInp').value) || 0;
+        const e = parseFloat(document.getElementById('expenseInp').value) || 0;
+        const s = document.getElementById('statusInp').value;
+        
+        if(!d) return alert("দয়া করে তারিখ দিন!");
+
+        document.getElementById('saveLoader').style.display = 'block';
+        document.getElementById('btnText').innerText = 'সেভিং...';
+
+        try {
+            await fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'add', id: Date.now(), date: d, inc: i, exp: e, status: s }) 
+            });
+            document.getElementById('incomeInp').value = '';
+            document.getElementById('expenseInp').value = '';
+            fetchData();
+        } catch(err) { alert("সেভ করা সম্ভব হয়নি!"); }
+        
+        document.getElementById('saveLoader').style.display = 'none';
+        document.getElementById('btnText').innerText = 'সেভ করুন';
+    }
+
+    async function deleteItem(id) {
+        if(confirm("আপনি কি এটি ডিলিট করতে নিশ্চিত?")) {
+            await fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'delete', id: id }) 
+            });
+            fetchData();
+        }
+    }
+
+    // টেবিল এবং স্ট্যাটাস রেন্ডার করার সমাধান
+    function render() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        let tI = 0, tE = 0, oD = 0, cD = 0;
+
+        db.forEach(x => {
+            const inc = Number(x.inc) || 0; 
+            const exp = Number(x.exp) || 0;
+            tI += inc; tE += exp;
+            
+            // স্ট্যাটাস লজিক ঠিক করা (Lowercase & Trim)
+            const st = (x.status || "").toString().trim().toLowerCase();
+            let isClosed = (st === 'closed');
+            
+            if(isClosed) cD++; else oD++;
+
+            tbody.innerHTML += `
+                <tr class="hover:bg-white/5 transition">
+                    <td class="p-6 text-sm text-slate-300">${formatDate(x.date)}</td>
+                    <td class="p-6 text-emerald-400 font-black">৳ ${inc.toLocaleString()}</td>
+                    <td class="p-6 text-rose-400 font-black">৳ ${exp.toLocaleString()}</td>
+                    <td class="p-6">
+                        <span class="px-3 py-1 rounded-xl text-[9px] font-bold uppercase ${isClosed ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500'}">
+                            ${isClosed ? 'দোকান বন্ধ' : 'দোকান খোলা'}
+                        </span>
+                    </td>
+                    ${isAdmin ? `<td class="p-6 text-center"><button onclick="deleteItem(${x.id})" class="text-slate-600 hover:text-rose-500"><i class="fas fa-trash-alt"></i></button></td>` : ''}
+                </tr>`;
+        });
+
+        // উপরের স্ট্যাটাস কার্ড আপডেট
+        document.getElementById('mIncome').innerText = '৳ ' + tI.toLocaleString();
+        document.getElementById('mExpense').innerText = '৳ ' + tE.toLocaleString();
+        document.getElementById('mProfit').innerText = '৳ ' + (tI - tE).toLocaleString();
+        document.getElementById('mOpen').innerText = oD; 
+        document.getElementById('mClosed').innerText = cD;
+
+        // প্রগ্রেস বার আপডেট
+        const max = Math.max(tI, tE) || 1;
+        document.getElementById('incomeBar').style.width = (tI / max * 100) + '%';
+        document.getElementById('expenseBar').style.width = (tE / max * 100) + '%';
+        
+        updateChart(tI, tE);
+    }
+
+    function updateChart(i, e) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: { 
+                labels: ['আয়', 'ব্যয়'], 
+                datasets: [{ 
+                    data: [i || 1, e || 0], 
+                    backgroundColor: ['#10b981', '#f43f5e'], 
+                    borderWidth: 0, 
+                    spacing: 8 
+                }] 
+            },
+            options: { cutout: '80%', plugins: { legend: { display: false } } }
+        });
+    }
+
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const s = document.getElementById('pdfStart').value;
+        const e = document.getElementById('pdfEnd').value;
+        if(!s || !e) return alert("শুরু এবং শেষের তারিখ সিলেক্ট করুন!");
+        
+        const filtered = db.filter(x => x.date >= s && x.date <= e);
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("MY GRAM - Accounts Report", 14, 20);
+        doc.setFontSize(10);
+        doc.text(`Report Period: ${formatDate(s)} to ${formatDate(e)}`, 14, 30);
+        
+        doc.autoTable({ 
+            startY: 35, 
+            head: [['Date', 'Income (Tk)', 'Expense (Tk)', 'Status']], 
+            body: filtered.map(x => [formatDate(x.date), x.inc, x.exp, x.status]) 
+        });
+        doc.save(`MyGram_Report_${s}.pdf`);
+    }
+</script>
+</body>
+</html>
